@@ -84,8 +84,8 @@ byteSwap64 = byteSwap
 -- Encoding
 -----------------------------------------------------------------------}
 
-unpack5Ptr :: Ptr Word8 -> ByteString -> ByteString
-unpack5Ptr !tbl bs @ (PS fptr off sz) =
+unpack5Ptr :: Bool -> Ptr Word8 -> ByteString -> ByteString
+unpack5Ptr padded !tbl bs @ (PS fptr off sz) =
   unsafePerformIO $ do
     let unpackedSize = dstSize $ BS.length bs
     BS.create unpackedSize $ \ dst -> do
@@ -94,7 +94,9 @@ unpack5Ptr !tbl bs @ (PS fptr off sz) =
           _ <- fillPadding dst_end (unpackedSize - (dst_end `minusPtr` dst))
           return ()
   where
-    dstSize x = padCeilN 8 (d + if m == 0 then 0 else 1)
+    dstSize x = if padded
+                then padCeilN 8 (d + if m == 0 then 0 else 1)
+                else d + if m == 0 then 0 else 1
       where (d, m) = (x * 8) `quotRem` 5
 
     fillPadding dst s = memset dst (c2w '=') (fromIntegral s)
@@ -154,14 +156,14 @@ unpack5Ptr !tbl bs @ (PS fptr off sz) =
 
 type EncTable = ByteString
 
-unpack5 :: EncTable -> ByteString -> ByteString
-unpack5 (PS fptr off len) bs
+unpack5 :: Bool -> EncTable -> ByteString -> ByteString
+unpack5 padded (PS fptr off len) bs
   | len /= 32
   = error $ "base32: unpack5: invalid lookup table size " ++ show len
   | otherwise =
   unsafePerformIO $ do
     withForeignPtr fptr $ \ptr -> do
-      return $ unpack5Ptr (ptr `advancePtr` off) bs
+      return $ unpack5Ptr padded (ptr `advancePtr` off) bs
 
 {-----------------------------------------------------------------------
 -- Decoding

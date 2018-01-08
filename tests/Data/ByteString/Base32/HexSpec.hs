@@ -26,6 +26,36 @@ spec = do
       encode "fooba"    `shouldBe` "CPNMUOJ1"
       encode "foobar"   `shouldBe` "CPNMUOJ1E8======"
 
+  describe "encodeNoPad" $ do
+    it "conform rfc examples" $ do
+      encodeNoPad ""         `shouldBe` ""
+      encodeNoPad "f"        `shouldBe` "CO"
+      encodeNoPad "fo"       `shouldBe` "CPNG"
+      encodeNoPad "foo"      `shouldBe` "CPNMU"
+      encodeNoPad "foob"     `shouldBe` "CPNMUOG"
+      encodeNoPad "fooba"    `shouldBe` "CPNMUOJ1"
+      encodeNoPad "foobar"   `shouldBe` "CPNMUOJ1E8"
+
+  describe "encodeLowercase" $ do
+    it "conform rfc examples" $ do
+      encodeLowercase ""         `shouldBe` ""
+      encodeLowercase "f"        `shouldBe` "co======"
+      encodeLowercase "fo"       `shouldBe` "cpng===="
+      encodeLowercase "foo"      `shouldBe` "cpnmu==="
+      encodeLowercase "foob"     `shouldBe` "cpnmuog="
+      encodeLowercase "fooba"    `shouldBe` "cpnmuoj1"
+      encodeLowercase "foobar"   `shouldBe` "cpnmuoj1e8======"
+
+  describe "encodeLowercaseNoPad" $ do
+    it "conform rfc examples" $ do
+      encodeLowercaseNoPad ""         `shouldBe` ""
+      encodeLowercaseNoPad "f"        `shouldBe` "co"
+      encodeLowercaseNoPad "fo"       `shouldBe` "cpng"
+      encodeLowercaseNoPad "foo"      `shouldBe` "cpnmu"
+      encodeLowercaseNoPad "foob"     `shouldBe` "cpnmuog"
+      encodeLowercaseNoPad "fooba"    `shouldBe` "cpnmuoj1"
+      encodeLowercaseNoPad "foobar"   `shouldBe` "cpnmuoj1e8"
+
   describe "decode" $ do
     it "conform rfc examples" $ do
       decode ""         `shouldBe` Right ""

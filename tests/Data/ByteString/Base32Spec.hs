@@ -30,14 +30,50 @@ spec = do
       (BS.length (encode bs) `rem` 8) `shouldBe` 0
 
     it "padding less than 8 bytes" $ property $ \bs ->
-      BC.count '=' bs `shouldSatisfy` (< 8)
+      BC.count '=' (encode bs) `shouldSatisfy` (< 8)
+
+  describe "encodeNoPad" $ do
+    it "conform RFC examples" $ do
+      encodeNoPad ""       `shouldBe` ""
+      encodeNoPad "f"      `shouldBe` "MY"
+      encodeNoPad "fo"     `shouldBe` "MZXQ"
+      encodeNoPad "foo"    `shouldBe` "MZXW6"
+      encodeNoPad "foob"   `shouldBe` "MZXW6YQ"
+      encodeNoPad "fooba"  `shouldBe` "MZXW6YTB"
+      encodeNoPad "foobar" `shouldBe` "MZXW6YTBOI"
+
+  describe "encodeLowercase" $ do
+    it "conform RFC examples" $ do
+      encodeLowercase ""       `shouldBe` ""
+      encodeLowercase "f"      `shouldBe` "my======"
+      encodeLowercase "fo"     `shouldBe` "mzxq===="
+      encodeLowercase "foo"    `shouldBe` "mzxw6==="
+      encodeLowercase "foob"   `shouldBe` "mzxw6yq="
+      encodeLowercase "fooba"  `shouldBe` "mzxw6ytb"
+      encodeLowercase "foobar" `shouldBe` "mzxw6ytboi======"
+
+    it "size always multiple of 8 bytes" $ property $ \bs ->
+      (BS.length (encodeLowercase bs) `rem` 8) `shouldBe` 0
+
+    it "padding less than 8 bytes" $ property $ \bs ->
+      BC.count '=' (encodeLowercase bs) `shouldSatisfy` (< 8)
+
+  describe "encodeLowercaseNoPad" $ do
+    it "conform RFC examples" $ do
+      encodeLowercaseNoPad ""       `shouldBe` ""
+      encodeLowercaseNoPad "f"      `shouldBe` "my"
+      encodeLowercaseNoPad "fo"     `shouldBe` "mzxq"
+      encodeLowercaseNoPad "foo"    `shouldBe` "mzxw6"
+      encodeLowercaseNoPad "foob"   `shouldBe` "mzxw6yq"
+      encodeLowercaseNoPad "fooba"  `shouldBe` "mzxw6ytb"
+      encodeLowercaseNoPad "foobar" `shouldBe` "mzxw6ytboi"
 
   describe "decode" $ do
     it "conform RFC examples" $ do
       decode ""                 `shouldBe` Right ""
       decode "MY======"         `shouldBe` Right "f"
       decode "MZXQ===="         `shouldBe` Right "fo"
-      decode  "MZXW6==="        `shouldBe` Right "foo"
+      decode "MZXW6==="         `shouldBe` Right "foo"
       decode "MZXW6YQ="         `shouldBe` Right "foob"
       decode "MZXW6YTB"         `shouldBe` Right "fooba"
       decode "MZXW6YTBOI======" `shouldBe` Right "foobar"

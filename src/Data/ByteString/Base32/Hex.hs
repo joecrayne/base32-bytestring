@@ -16,6 +16,9 @@
 module Data.ByteString.Base32.Hex
        ( Base32Hex
        , encode
+       , encodeNoPad
+       , encodeLowercase
+       , encodeLowercaseNoPad
        , decode
        , decodeLenient
        ) where
@@ -38,7 +41,25 @@ encTable = BS.pack $ L.map encW5 [0..31]
 
 -- | Encode an arbitrary bytestring into (upper case) base32hex form.
 encode :: ByteString -> Base32Hex
-encode = unpack5 encTable
+encode = unpack5 True encTable
+
+encodeNoPad :: ByteString -> Base32Hex
+encodeNoPad = unpack5 False encTable
+
+encW5L :: Word5 -> Word8
+encW5L !x
+  |  x <= 9   = 48 {- c2w '0' -}      + x
+  | otherwise = 87 {- c2w 'A' - 10 -} + x
+
+encTableLowercase :: EncTable
+encTableLowercase = BS.pack $ L.map encW5L [0..31]
+
+-- | Encode an arbitrary bytestring into (lower case) base32hex form.
+encodeLowercase :: ByteString -> Base32Hex
+encodeLowercase = unpack5 True encTableLowercase
+
+encodeLowercaseNoPad :: ByteString -> Base32Hex
+encodeLowercaseNoPad = unpack5 False encTableLowercase
 
 decW5 :: Word8 -> Word5
 decW5 !x

@@ -44,7 +44,7 @@ decW5 !x = case x `BS.elemIndex` encTable of
 
 -- | Encode an arbitrary bytestring into (upper case) base32hex form.
 encode :: ByteString -> Base32z
-encode = BS.takeWhile (/= 61) . unpack5 encTable
+encode = unpack5 False encTable
 
 -- decW5 :: Word8 -> Word5
 -- decW5 !x
