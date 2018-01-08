@@ -12,6 +12,7 @@
 --   Data.ByteString.Base32.Hex as Base32Hex@ to avoid name clashes
 --   with @Data.ByteString.Base32@.
 --
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ByteString.Base32.Z
@@ -34,7 +35,11 @@ type Base32z = ByteString
 --   |  x <= 9   = 48 {- c2w '0' -}      + x
 --   | otherwise = 55 {- c2w 'A' - 10 -} + x
 
+#if MIN_VERSION_base(4,7,0)
 encTable :: EncTable
+#else
+encTable :: ByteString
+#endif
 encTable = "ybndrfg8ejkmcpqxot1uwisza345h769"
 
 decW5 :: Word8 -> Word5
