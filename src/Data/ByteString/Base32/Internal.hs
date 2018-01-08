@@ -65,6 +65,10 @@ padCeilN !n !x
   where  mask = n - 1
          remd = x .&. mask
 
+#if !MIN_VERSION_bytestring(0,10,6)
+accursedUnutterablePerformIO = inlinePerformIO
+#endif
+
 {-----------------------------------------------------------------------
 -- Encoding
 -----------------------------------------------------------------------}
