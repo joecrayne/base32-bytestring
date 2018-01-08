@@ -32,7 +32,11 @@ import Data.Bits.Extras
 import Data.ByteString as BS
 import Data.ByteString.Internal as BS
 import Data.Word
+#if MIN_VERSION_base(4,7,0)
 import Foreign
+#else
+import Foreign hiding (unsafePerformIO)
+#endif
 import System.IO.Unsafe (unsafePerformIO)
 import System.Endian
 
