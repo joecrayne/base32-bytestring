@@ -26,7 +26,9 @@ module Data.ByteString.Base32.Internal
 import Prelude hiding (catch)
 #endif
 import Control.Exception hiding (mask)
-import Data.Bits
+#if !MIN_VERSION_base(4,7,0)
+import Data.Bits.Extras
+#endif
 import Data.ByteString as BS
 import Data.ByteString.Internal as BS
 import Data.Word
@@ -67,6 +69,11 @@ padCeilN !n !x
 
 #if !MIN_VERSION_bytestring(0,10,6)
 accursedUnutterablePerformIO = inlinePerformIO
+#endif
+
+#if !MIN_VERSION_base(4,7,0)
+byteSwap32 = byteSwap
+byteSwap64 = byteSwap
 #endif
 
 {-----------------------------------------------------------------------
