@@ -30,11 +30,6 @@ import Data.List as L
 -- | z-Base32 encoded bytestring.
 type Base32z = ByteString
 
--- encW5 :: Word5 -> Word8
--- encW5 !x
---   |  x <= 9   = 48 {- c2w '0' -}      + x
---   | otherwise = 55 {- c2w 'A' - 10 -} + x
-
 #if MIN_VERSION_base(4,7,0)
 encTable :: EncTable
 #else
@@ -47,25 +42,15 @@ decW5 !x = case x `BS.elemIndex` encTable of
   Just y -> fromIntegral y
   Nothing -> invIx
 
--- | Encode an arbitrary bytestring into (upper case) base32hex form.
+-- | Encode an arbitrary bytestring into z-base32 form.
 encode :: ByteString -> Base32z
 encode = unpack5 False encTable
-
--- decW5 :: Word8 -> Word5
--- decW5 !x
---   | x <  48  {- c2w '0' -} = invIx
---   | x <= 57  {- c2w '9' -} = x - 48 {- c2w '0' -}
---   | x <  65  {- c2w 'A' -} = invIx
---   | x <= 86  {- c2w 'V' -} = x - 55 {- c2w 'A' + 10 -}
---   | x <  97  {- c2w 'a' -} = invIx
---   | x <= 118 {- c2w 'v' -} = x - 87 {- c2w 'a' + 10 -}
---   | otherwise = invIx
 
 decTable :: DecTable
 decTable = BS.pack $ L.map decW5 [minBound .. maxBound]
 
--- | Decode a base32hex encoded bytestring. This functions is
--- case-insensitive and do not requires correct padding.
+-- | Decode a z-base32 encoded bytestring. This function is
+-- case-insensitive.
 decode :: Base32z -> Either String ByteString
 decode = pack5 decTable
 

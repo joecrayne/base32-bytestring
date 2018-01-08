@@ -76,7 +76,7 @@ decW5 !x
 decTable :: ByteString
 decTable = BS.pack $ L.map decW5 [minBound .. maxBound]
 
--- | Decode a base32 encoded bytestring. This functions is
+-- | Decode a base32 encoded bytestring. This function is
 -- case-insensitive and do not require correct padding.
 decode :: Base32 -> Either String ByteString
 decode = pack5 decTable
