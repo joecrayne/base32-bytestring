@@ -12,9 +12,7 @@
 --   Data.ByteString.Base32.Hex as Base32Hex@ to avoid name clashes
 --   with @Data.ByteString.Base32@.
 --
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE BangPatterns #-}
-{-# LANGUAGE OverloadedStrings #-}
 module Data.ByteString.Base32.Z
        ( Base32z
        , encode
@@ -25,17 +23,13 @@ module Data.ByteString.Base32.Z
 import Data.ByteString as BS
 import Data.ByteString.Base32.Internal
 import Data.List as L
-
+import Data.ByteString.Char8 as BC
 
 -- | z-Base32 encoded bytestring.
 type Base32z = ByteString
 
-#if MIN_VERSION_base(4,7,0)
 encTable :: EncTable
-#else
-encTable :: ByteString
-#endif
-encTable = "ybndrfg8ejkmcpqxot1uwisza345h769"
+encTable = BC.pack "ybndrfg8ejkmcpqxot1uwisza345h769"
 
 decW5 :: Word8 -> Word5
 decW5 !x = case x `BS.elemIndex` encTable of
