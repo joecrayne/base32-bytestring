@@ -30,7 +30,7 @@ import Data.Bits
 import Data.ByteString as BS
 import Data.ByteString.Internal as BS
 import Data.Word
-import Foreign   hiding (unsafePerformIO)
+import Foreign
 import System.IO.Unsafe (unsafePerformIO)
 import System.Endian
 
