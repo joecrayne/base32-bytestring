@@ -26,7 +26,7 @@ module Data.ByteString.Base32.Internal
 import Prelude hiding (catch)
 #endif
 import Control.Exception hiding (mask)
-import Data.Bits.Extras
+import Data.Bits
 import Data.ByteString as BS
 import Data.ByteString.Internal as BS
 import Data.Word
@@ -46,11 +46,11 @@ type Word5 = Word8
 -- intrinsics
 --
 toBE64' :: Word64 -> Word64
-toBE64' = if getSystemEndianness == BigEndian then id else byteSwap
+toBE64' = if getSystemEndianness == BigEndian then id else byteSwap64
 {-# INLINE toBE64' #-}
 
 toBE32' :: Word32 -> Word32
-toBE32' = if getSystemEndianness == BigEndian then id else byteSwap
+toBE32' = if getSystemEndianness == BigEndian then id else byteSwap32
 {-# INLINE toBE32' #-}
 
 fromBE32' :: Word32 -> Word32
@@ -176,7 +176,7 @@ pack5Ptr !tbl bs @ (PS fptr off sz) =
     lookupTable ix
         | x == invIx = error $ show (w2c ix) ++ " is not base32 character"
         | otherwise  = x
-      where x = inlinePerformIO (peekByteOff tbl (fromIntegral ix))
+      where x = accursedUnutterablePerformIO (peekByteOff tbl (fromIntegral ix))
     {-# INLINE lookupTable #-}
 
     dstSize x = d + if m == 0 then 0 else 1
@@ -248,7 +248,7 @@ pack5 (PS fptr off len) bs
 
 isInAlphabet :: Ptr Word5 -> Word8 -> Bool
 isInAlphabet !tbl !ix =
-  inlinePerformIO (peekByteOff tbl (fromIntegral ix)) /= invIx
+  accursedUnutterablePerformIO (peekByteOff tbl (fromIntegral ix)) /= invIx
 
 pack5Lenient :: DecTable -> ByteString -> Either String ByteString
 pack5Lenient tbl @ (PS fptr _ _) bs =

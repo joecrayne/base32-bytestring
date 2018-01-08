@@ -1,8 +1,13 @@
 language: haskell
 
-notifications:
-  email:
-    - pxqr.sta@gmail.com
+# notifications:
+#   email:
+#     - pxqr.sta@gmail.com
+
+ghc:
+  - "8.2"
+  - "8.0"
+  - "7.10"
 
 install:
   cabal install --only-dependencies
