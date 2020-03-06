@@ -40,6 +40,7 @@ allowSubst :: Word8 -> Word8
 allowSubst 0x6F = 0x30 -- 'o' -> '0'
 allowSubst 0x69 = 0x31 -- 'i' -> '1'
 allowSubst 0x6C = 0x31 -- 'l' -> '1'
+allowSubst 0x75 = 0x76 -- 'u' -> 'v'
 allowSubst x    = x
 
 toLower :: Word8 -> Word8
